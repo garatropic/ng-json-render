@@ -15,6 +15,11 @@ export const appRoutes: Route[] = [
       import('./pages/getting-started.page').then((m) => m.GettingStartedPage),
   },
   {
+    path: 'ai',
+    title: 'ng-json-render · Generate UI with AI',
+    loadComponent: () => import('./pages/ai.page').then((m) => m.AiPage),
+  },
+  {
     path: 'dashboard',
     title: 'ng-json-render · Dashboard',
     loadComponent: () =>

@@ -90,10 +90,14 @@ export const registry = mergeRegistries(
     <div class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Custom components</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        Any standalone Angular component can be a catalog component. Props map to
+        Generative UI gets useful when the model builds screens from
+        <strong>your</strong> components: your pricing card, your order table,
+        your design system. Any standalone Angular component works. Props map to
         <code>input()</code>, children go through <code>&lt;ng-content&gt;</code>,
-        and events use the injected <code>JR_CONTEXT</code>. Register it under a
-        <code>type</code> and merge with the built-ins.
+        and events use the injected <code>JR_CONTEXT</code>. Add it to the
+        <strong>registry</strong> under a <code>type</code> so Angular can draw
+        it, and to your <strong>catalog</strong> (with a description) so the
+        model knows it exists.
       </p>
     </div>
 

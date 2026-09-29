@@ -90,6 +90,7 @@ export class App {
   protected readonly nav: NavLink[] = [
     { path: '/', label: 'Overview', exact: true },
     { path: '/start', label: 'Get started', exact: false },
+    { path: '/ai', label: 'Generate UI with AI', exact: false },
     { path: '/dashboard', label: 'Dashboard', exact: false },
     { path: '/components', label: 'Components', exact: false },
     { path: '/custom', label: 'Custom components', exact: false },

@@ -22,8 +22,10 @@ interface Section {
     <div class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Components</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        The <code>&#64;ng-json-render/primitives</code> catalog — ~19
-        Tailwind-styled, dark-mode-ready components. Each block below is a live
+        <code>&#64;ng-json-render/primitives</code> ships 20 Tailwind-styled,
+        dark-mode-ready components and <code>primitivesRegistry</code>, so you
+        can render specs before writing any components of your own. To let a
+        model use them, list them in your catalog. Each block below is a live
         render on the left and the exact spec on the right.
       </p>
     </div>
