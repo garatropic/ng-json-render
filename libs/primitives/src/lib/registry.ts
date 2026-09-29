@@ -1,17 +1,24 @@
 import { type JrRegistry, defineRegistry } from '@ng-json-render/core';
-import { JrBarChart, JrLineChart } from './charts';
-import { JrBadge, JrHeading, JrStat, JrText } from './content';
-import {
-  JrButton,
-  JrCheckbox,
-  JrInput,
-  JrSelect,
-  JrSwitch,
-  JrTextarea,
-} from './forms';
-import { JrAlert, JrProgress } from './feedback';
-import { JrCard, JrContainer, JrDivider, JrGrid, JrStack } from './layout';
-import { JrTable } from './table';
+import { JrBadge } from './content/jr-badge';
+import { JrHeading } from './content/jr-heading';
+import { JrStat } from './content/jr-stat';
+import { JrText } from './content/jr-text';
+import { JrBarChart } from './data/jr-bar-chart';
+import { JrLineChart } from './data/jr-line-chart';
+import { JrTable } from './data/jr-table';
+import { JrAlert } from './feedback/jr-alert';
+import { JrProgress } from './feedback/jr-progress';
+import { JrButton } from './forms/jr-button';
+import { JrCheckbox } from './forms/jr-checkbox';
+import { JrInput } from './forms/jr-input';
+import { JrSelect } from './forms/jr-select';
+import { JrSwitch } from './forms/jr-switch';
+import { JrTextarea } from './forms/jr-textarea';
+import { JrCard } from './layout/jr-card';
+import { JrContainer } from './layout/jr-container';
+import { JrDivider } from './layout/jr-divider';
+import { JrGrid } from './layout/jr-grid';
+import { JrStack } from './layout/jr-stack';
 
 /**
  * Registry of all built-in primitive components, keyed by catalog `type`.

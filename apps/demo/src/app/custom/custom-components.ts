@@ -39,7 +39,7 @@ import { primitivesRegistry } from '@ng-json-render/primitives';
       <ul class="mt-4 flex-1 space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
         @for (f of features(); track f) {
           <li class="flex items-center gap-2">
-            <span class="text-indigo-500">✓</span> {{ f }}
+            <span class="text-indigo-500" aria-hidden="true">✓</span> {{ f }}
           </li>
         }
       </ul>

@@ -50,7 +50,7 @@ In the tables below, `children` means the component projects its spec `children`
 | `Alert` | `title?: string`, `message: string`, `tone: 'info' \| 'success' \| 'warning' \| 'danger'` ('info') | |
 | `Progress` | `value: number` (0–100, clamped), `label?: string` | |
 | `BarChart` | `data: { label: string; value: number }[]`, `height: number` (160) | CSS bars, no chart library |
-| `LineChart` | `data: number[]`, `height: number` (120) | SVG line, **plain numbers** only |
+| `LineChart` | `data: number[]`, `height: number` (120), `label?: string` | SVG line, **plain numbers** only. `label` is the accessible name; without it the chart is hidden from screen readers |
 | `Table` | `columns: (string \| { key: string; label?: string })[]`, `rows: Record<string, unknown>[]` | Cells are read by column `key` |
 | `Input` | `value: string` (model), `label?`, `placeholder`, `type: 'text' \| 'email' \| 'password' \| 'number'`, `hint?` | Bind `value` with `$bindState` |
 | `Textarea` | `value: string` (model), `label?`, `placeholder`, `rows: number` (3) | Bind `value` |
@@ -113,7 +113,7 @@ export const primitivesCatalogComponents = {
   Alert: { props: z.object({ title: z.string().optional(), message: z.string(), tone: tone.optional() }), description: 'Inline status message' },
   Progress: { props: z.object({ value: z.number(), label: z.string().optional() }), description: 'Progress bar, value 0-100' },
   BarChart: { props: z.object({ data: z.array(z.object({ label: z.string(), value: z.number() })), height: z.number().optional() }), description: 'Bar chart of labelled values' },
-  LineChart: { props: z.object({ data: z.array(z.number()), height: z.number().optional() }), description: 'Line chart of a numeric series (numbers only, no labels)' },
+  LineChart: { props: z.object({ data: z.array(z.number()), height: z.number().optional(), label: z.string().optional() }), description: 'Line chart of a numeric series (numbers only, no labels)' },
   Table: {
     props: z.object({
       columns: z.array(z.union([z.string(), z.object({ key: z.string(), label: z.string().optional() })])),

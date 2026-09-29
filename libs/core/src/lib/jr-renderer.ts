@@ -5,10 +5,12 @@ import {
   type EffectRef,
   EnvironmentInjector,
   Injector,
+  type OutputRef,
   ViewContainerRef,
   effect,
   inject,
   input,
+  isDevMode,
   output,
   reflectComponentType,
   signal,
@@ -49,10 +51,10 @@ const ROOT_SCOPE: RenderScope = { item: undefined, index: -1 };
  * instantiated dynamically. Children are projected into each component's
  * `<ng-content>`.
  *
- * Structural changes (the spec itself) rebuild the tree; state changes update
- * individual nodes' inputs in place via per-node effects — so bound inputs stay
- * live and keep focus. Props declaring `$bindState` two-way bind to a component's
- * `model()` (Signal Forms `FormValueControl` / `FormCheckboxControl`).
+ * Structural changes (the spec or registry) rebuild the tree; state changes
+ * update individual nodes' inputs in place via per-node effects — so bound
+ * inputs stay live and keep focus. Props declaring `$bindState` two-way bind to
+ * a component's `model()` (Signal Forms `FormValueControl` / `FormCheckboxControl`).
  */
 @Component({
   selector: 'jr-renderer',
@@ -82,42 +84,48 @@ export class JrRenderer {
     optional: true,
   });
 
-  /** Per-node effects (prop resolution + two-way bindings), torn down on rebuild. */
+  /** Per-node effects (prop resolution), torn down on rebuild. */
   private readonly effects: EffectRef[] = [];
 
   constructor() {
-    // Feed spec/state inputs into the store.
+    // Feed spec/state inputs into the store (a `null` spec clears it).
     effect(() => {
       const spec = this.spec();
-      if (!spec) return;
       const extra = this.state();
-      const merged: Spec = extra
-        ? { ...spec, state: { ...(spec.state ?? {}), ...extra } }
-        : spec;
+      const merged: Spec | null =
+        spec && extra
+          ? { ...spec, state: { ...(spec.state ?? {}), ...extra } }
+          : spec;
       untracked(() => this.store.setSpec(merged));
     });
 
-    // Rebuild the DOM only when the spec (structure) changes. State-driven prop
-    // updates are handled per node, without rebuilding.
+    // Rebuild the DOM only when the spec (structure) or registry changes.
+    // State-driven prop updates are handled per node, without rebuilding.
     effect((onCleanup) => {
       const vcr = this.anchor();
       const spec = this.store.spec();
-      untracked(() => this.render(vcr, spec));
+      const registry = this.registry() ?? this.fallbackRegistry;
+      untracked(() => this.render(vcr, spec, registry));
       onCleanup(() => this.teardown(vcr));
     });
   }
 
-  private render(vcr: ViewContainerRef, spec: Spec | null): void {
+  private render(
+    vcr: ViewContainerRef,
+    spec: Spec | null,
+    registry: JrRegistry | null,
+  ): void {
     this.teardown(vcr);
     if (!spec?.root) return;
-    const registry = this.registry() ?? this.fallbackRegistry;
     if (!registry) {
-      console.warn(
-        '[json-render] No registry provided (set [registry] or use provideJsonRender).',
-      );
+      if (isDevMode()) {
+        console.warn(
+          '[json-render] No registry provided (set [registry] or use provideJsonRender).',
+        );
+      }
       return;
     }
-    this.buildNode(vcr, spec.root, registry, ROOT_SCOPE);
+    this.buildNode(vcr, spec.root, registry, ROOT_SCOPE, new Set());
   }
 
   private buildNode(
@@ -125,7 +133,21 @@ export class JrRenderer {
     id: string,
     registry: JrRegistry,
     scope: RenderScope,
+    visited: Set<string>,
   ): ComponentRef<unknown> | null {
+    // Each element is rendered at most once. A spec is untrusted input: a cycle
+    // would recurse forever, and repeated child references could fan out
+    // exponentially.
+    if (visited.has(id)) {
+      if (isDevMode()) {
+        console.warn(
+          `[json-render] Element "${id}" is referenced more than once; skipped.`,
+        );
+      }
+      return null;
+    }
+    visited.add(id);
+
     const element = this.store.getElement(id);
     if (!element) return null;
 
@@ -133,18 +155,26 @@ export class JrRenderer {
       return null;
     }
 
-    const cmp = registry.components[element.type];
+    // Own keys only: a spec type like "constructor" must not resolve to Object.
+    const cmp = Object.prototype.hasOwnProperty.call(
+      registry.components,
+      element.type,
+    )
+      ? registry.components[element.type]
+      : undefined;
     if (!cmp) {
-      console.warn(
-        `[json-render] No component registered for type "${element.type}".`,
-      );
+      if (isDevMode()) {
+        console.warn(
+          `[json-render] No component registered for type "${element.type}".`,
+        );
+      }
       return null;
     }
 
     // Build children first so their host nodes can be projected into <ng-content>.
     const childNodes: Node[] = [];
     for (const childId of element.children ?? []) {
-      const childRef = this.buildNode(vcr, childId, registry, scope);
+      const childRef = this.buildNode(vcr, childId, registry, scope, visited);
       if (childRef) childNodes.push(childRef.location.nativeElement as Node);
     }
 
@@ -188,8 +218,10 @@ export class JrRenderer {
   }
 
   /**
-   * Wire two-way `$bindState` props to a component's `model()` output. Works with
-   * any Signal Forms control (`value`/`checked` model), writing edits back to state.
+   * Wire two-way `$bindState` props to a component's `model()` (its
+   * `<prop>Change` output), writing the component's own edits back to state.
+   * Values pushed in via `setInput` don't emit, so this doesn't loop. The
+   * subscription ends when the component is destroyed.
    */
   private bindTwoWay(
     ref: ComponentRef<unknown>,
@@ -203,27 +235,21 @@ export class JrRenderer {
     });
     if (!bindings) return;
 
-    const outputs = new Set(mirror.outputs.map((o) => o.templateName));
     const instance = ref.instance as Record<string, unknown>;
 
     for (const [prop, path] of Object.entries(bindings)) {
-      // A model() prop exposes a matching `<prop>Change` output.
-      if (!inputNames.has(prop) || !outputs.has(`${prop}Change`)) continue;
-      const modelSignal = instance[prop];
-      if (typeof modelSignal !== 'function') continue;
+      if (!inputNames.has(prop)) continue;
+      const out = mirror.outputs.find((o) => o.templateName === `${prop}Change`);
+      const emitter = out
+        ? (instance[out.propName] as OutputRef<unknown>)
+        : undefined;
+      if (typeof emitter?.subscribe !== 'function') continue;
 
-      const eff = effect(
-        () => {
-          const next = (modelSignal as () => unknown)();
-          untracked(() => {
-            if (this.store.getStatePath(path) !== next) {
-              this.store.setStatePath(path, next);
-            }
-          });
-        },
-        { injector: this.injector },
-      );
-      this.effects.push(eff);
+      emitter.subscribe((next) => {
+        if (this.store.getStatePath(path) !== next) {
+          this.store.setStatePath(path, next);
+        }
+      });
     }
   }
 
@@ -266,10 +292,12 @@ export class JrRenderer {
       : (binding?.action ?? event);
 
     const ctx = { action, payload, nodeId, element };
-    void this.dispatcher?.dispatch(ctx);
 
+    // Emit first so a throwing handler can't swallow the `(action)` output;
+    // handler errors then reach Angular's ErrorHandler via the event listener.
     const spec = this.store.spec();
     if (spec) this.action.emit({ ...ctx, spec });
+    void this.dispatcher?.dispatch(ctx);
   }
 
   private teardown(vcr: ViewContainerRef): void {

@@ -33,7 +33,7 @@ interface Section {
     <div class="flex flex-col gap-12">
       @for (s of sections; track s.title) {
         <app-docs-example
-          [title]="s.title"
+          [heading]="s.title"
           [description]="s.description"
           [spec]="s.spec"
         />

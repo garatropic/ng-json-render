@@ -24,6 +24,7 @@ describe('App shell', () => {
     expect(navLabels).toEqual([
       'Overview',
       'Get started',
+      'Generate UI with AI',
       'Dashboard',
       'Components',
       'Custom components',

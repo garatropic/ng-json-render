@@ -17,7 +17,12 @@
       "@ng-json-render/core": ["./libs/core/src/index.ts"],
       "@ng-json-render/primitives": ["./libs/primitives/src/index.ts"],
       "@ng-json-render/core/testing": ["./libs/core/testing/src/index.ts"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }

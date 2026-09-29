@@ -42,7 +42,7 @@ mergeRegistries(primitivesRegistry, defineRegistry({ MyCard }));
 | Feedback | `Alert` | `title`, `message`, `tone` |
 | | `Progress` | `value` (0–100), `label` |
 | Data | `BarChart` | `data: { label, value }[]`, `height` |
-| | `LineChart` | `data: number[]`, `height` |
+| | `LineChart` | `data: number[]`, `height`, `label?` |
 | | `Table` | `columns`, `rows` |
 | Forms | `Input` | `value` (model), `label`, `placeholder`, `type`, `hint` |
 | | `Textarea` | `value` (model), `label`, `placeholder`, `rows` |

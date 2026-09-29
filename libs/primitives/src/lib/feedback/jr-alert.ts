@@ -15,7 +15,10 @@ const ALERT_TONES: Record<string, string> = {
     'border-red-200 bg-red-50 text-red-800 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200',
 };
 
-/** Inline callout / alert banner. */
+/**
+ * Inline callout. `warning` and `danger` are announced immediately
+ * (`role="alert"`); `info` and `success` are polite (`role="status"`).
+ */
 @Component({
   selector: 'jr-alert',
   template: `
@@ -28,7 +31,7 @@ const ALERT_TONES: Record<string, string> = {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    role: 'alert',
+    '[attr.role]': 'urgent() ? "alert" : "status"',
     '[class]': 'toneClass()',
   },
 })
@@ -36,38 +39,12 @@ export class JrAlert {
   readonly title = input<string>();
   readonly message = input('');
   readonly tone = input<'info' | 'success' | 'warning' | 'danger'>('info');
+  protected readonly urgent = computed(
+    () => this.tone() === 'warning' || this.tone() === 'danger',
+  );
   protected readonly toneClass = computed(
     () =>
       'block rounded-lg border px-4 py-3 ' +
       (ALERT_TONES[this.tone()] ?? ALERT_TONES['info']),
-  );
-}
-
-/** Determinate progress bar (0–100). */
-@Component({
-  selector: 'jr-progress',
-  template: `
-    <div
-      class="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
-    >
-      <div
-        class="h-full rounded-full bg-indigo-600 transition-[width] duration-300"
-        [style.width.%]="clamped()"
-      ></div>
-    </div>
-    @if (label()) {
-      <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        {{ label() }} · {{ clamped() }}%
-      </div>
-    }
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'block' },
-})
-export class JrProgress {
-  readonly value = input<number>(0);
-  readonly label = input<string>();
-  protected readonly clamped = computed(() =>
-    Math.max(0, Math.min(100, Math.round(this.value()))),
   );
 }
