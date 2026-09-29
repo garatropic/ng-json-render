@@ -1,3 +1,17 @@
+## 1.0.0-beta.0 (2026-09-29)
+
+### 🚀 Features
+
+- **skills:** add agent skills for ng-json-render and primitives ([b8816f1](https://github.com/garatropic/ng-json-render/commit/b8816f1))
+
+### 🩹 Fixes
+
+- apply Angular audit fixes and split primitives into one file per component ([4f75c16](https://github.com/garatropic/ng-json-render/commit/4f75c16))
+
+### ❤️ Thank You
+
+- Maina Wycliffe
+
 ## 0.0.3 (2026-07-05)
 
 ### 🩹 Fixes
