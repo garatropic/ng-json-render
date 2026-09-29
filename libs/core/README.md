@@ -2,7 +2,7 @@
 
 Angular renderer for [json-render](https://json-render.dev). Renders a JSON spec, written by an AI model or your server, using your own Angular components.
 
-[Docs](https://mainawycliffe.github.io/ng-json-render/) · [GitHub](https://github.com/mainawycliffe/ng-json-render)
+[Docs](https://garatropic.github.io/ng-json-render/) · [GitHub](https://github.com/garatropic/ng-json-render)
 
 json-render is a framework for generative UI: a model generates a UI as JSON, using only the components and actions in your catalog. This package renders that JSON with Angular components. The catalog, spec format, prompts and streaming come from `@json-render/core`.
 
@@ -42,11 +42,11 @@ export class App {
 
 ## Documentation
 
-The [project README](https://github.com/mainawycliffe/ng-json-render#readme) covers:
+The [project README](https://github.com/garatropic/ng-json-render#readme) covers:
 
-- [Spec format](https://github.com/mainawycliffe/ng-json-render#spec-format)
-- [Generating specs with AI](https://github.com/mainawycliffe/ng-json-render#generating-specs-with-ai)
-- [Custom components](https://github.com/mainawycliffe/ng-json-render#custom-components)
-- [Actions](https://github.com/mainawycliffe/ng-json-render#actions)
-- [Feature support](https://github.com/mainawycliffe/ng-json-render#feature-support)
-- [Testing](https://github.com/mainawycliffe/ng-json-render#testing) with `@ng-json-render/core/testing`
+- [Spec format](https://github.com/garatropic/ng-json-render#spec-format)
+- [Generating specs with AI](https://github.com/garatropic/ng-json-render#generating-specs-with-ai)
+- [Custom components](https://github.com/garatropic/ng-json-render#custom-components)
+- [Actions](https://github.com/garatropic/ng-json-render#actions)
+- [Feature support](https://github.com/garatropic/ng-json-render#feature-support)
+- [Testing](https://github.com/garatropic/ng-json-render#testing) with `@ng-json-render/core/testing`

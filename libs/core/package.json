@@ -4,7 +4,7 @@
   "description": "Angular renderer for json-render — safely render AI-agent-generated & server-driven UIs from a JSON spec.",
   "license": "MIT",
   "author": "Maina Wycliffe (https://github.com/mainawycliffe)",
-  "homepage": "https://mainawycliffe.github.io/ng-json-render/",
+  "homepage": "https://garatropic.github.io/ng-json-render/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garatropic/ng-json-render.git",

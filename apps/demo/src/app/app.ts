@@ -36,7 +36,7 @@ interface NavLink {
               >json-render docs</a
             >
             <a
-              href="https://github.com/mainawycliffe/ng-json-render"
+              href="https://github.com/garatropic/ng-json-render"
               target="_blank"
               rel="noreferrer"
               class="font-medium text-zinc-600 hover:underline dark:text-zinc-300"

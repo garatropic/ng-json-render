@@ -34,7 +34,7 @@ This was a version bump only, there were no code changes.
 
 ### 🩹 Fixes
 
-- fix the name of the repo ([fd34f2c](https://github.com/mainawycliffe/ng-json-render/commit/fd34f2c))
+- fix the name of the repo ([fd34f2c](https://github.com/garatropic/ng-json-render/commit/fd34f2c))
 
 ### ❤️ Thank You
 
@@ -44,17 +44,17 @@ This was a version bump only, there were no code changes.
 
 ### 🚀 Features
 
-- **core:** json-render rendering engine for Angular ([b043102](https://github.com/mainawycliffe/ng-json-render/commit/b043102))
-- **demo:** analytics dashboard rendered from a spec ([56682a4](https://github.com/mainawycliffe/ng-json-render/commit/56682a4))
-- **demo:** multi-page docs site for Angular developers ([2c18cd5](https://github.com/mainawycliffe/ng-json-render/commit/2c18cd5))
-- **demo:** getting-started page + wider, more legible docs layout ([f5a8359](https://github.com/mainawycliffe/ng-json-render/commit/f5a8359))
-- **libs:** support Angular 19–22 and configure public publishing ([f1d00a7](https://github.com/mainawycliffe/ng-json-render/commit/f1d00a7))
-- **primitives:** Tailwind + Signal Forms component catalog ([c01720e](https://github.com/mainawycliffe/ng-json-render/commit/c01720e))
-- **primitives:** make Grid responsive ([4e78f2a](https://github.com/mainawycliffe/ng-json-render/commit/4e78f2a))
+- **core:** json-render rendering engine for Angular ([b043102](https://github.com/garatropic/ng-json-render/commit/b043102))
+- **demo:** analytics dashboard rendered from a spec ([56682a4](https://github.com/garatropic/ng-json-render/commit/56682a4))
+- **demo:** multi-page docs site for Angular developers ([2c18cd5](https://github.com/garatropic/ng-json-render/commit/2c18cd5))
+- **demo:** getting-started page + wider, more legible docs layout ([f5a8359](https://github.com/garatropic/ng-json-render/commit/f5a8359))
+- **libs:** support Angular 19–22 and configure public publishing ([f1d00a7](https://github.com/garatropic/ng-json-render/commit/f1d00a7))
+- **primitives:** Tailwind + Signal Forms component catalog ([c01720e](https://github.com/garatropic/ng-json-render/commit/c01720e))
+- **primitives:** make Grid responsive ([4e78f2a](https://github.com/garatropic/ng-json-render/commit/4e78f2a))
 
 ### 🩹 Fixes
 
-- **release:** lockstep versioning with auto-bumped internal peer range ([ca8af5e](https://github.com/mainawycliffe/ng-json-render/commit/ca8af5e))
+- **release:** lockstep versioning with auto-bumped internal peer range ([ca8af5e](https://github.com/garatropic/ng-json-render/commit/ca8af5e))
 
 ### ❤️ Thank You
 

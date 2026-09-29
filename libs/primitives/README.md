@@ -2,7 +2,7 @@
 
 20 Tailwind-styled components and `primitivesRegistry` for [`@ng-json-render/core`](https://www.npmjs.com/package/@ng-json-render/core). Ships no catalog; to let a model use these components, add them to your own `defineCatalog(...)`.
 
-[Docs](https://mainawycliffe.github.io/ng-json-render/components) · [GitHub](https://github.com/mainawycliffe/ng-json-render)
+[Docs](https://garatropic.github.io/ng-json-render/components) · [GitHub](https://github.com/garatropic/ng-json-render)
 
 ## Install
 
@@ -50,4 +50,4 @@ mergeRegistries(primitivesRegistry, defineRegistry({ MyCard }));
 | | `Checkbox`, `Switch` | `checked` (model), `label` |
 | | `Button` | `label`, `variant`, `disabled`; emits `press` |
 
-Bind form values with `{ "$bindState": "/path" }`. The [primitives skill](https://github.com/mainawycliffe/ng-json-render/blob/main/skills/ng-json-render-primitives/SKILL.md) lists every prop type and default, and includes a catalog you can copy.
+Bind form values with `{ "$bindState": "/path" }`. The [primitives skill](https://github.com/garatropic/ng-json-render/blob/main/skills/ng-json-render-primitives/SKILL.md) lists every prop type and default, and includes a catalog you can copy.
