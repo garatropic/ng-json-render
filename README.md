@@ -372,7 +372,7 @@ export class PricingCard {
 
 ### Form controls
 
-Expose the editable value as a `model()`, usually named `value` (or `checked` for checkboxes). When the prop uses `$bindState`, the renderer writes changes back to state. This matches the Signal Forms `FormValueControl` / `FormCheckboxControl` shape, so the same control also works with `[field]` on Angular 21.
+Expose the editable value as a `model()`, usually named `value` (or `checked` for checkboxes). When the prop uses `$bindState`, the renderer writes changes back to state. This matches the Signal Forms `FormValueControl` / `FormCheckboxControl` shape, so on Angular 21+ the same control also works with the Signal Forms `[formField]` directive (`[field]` in early 21 releases).
 
 ```ts
 import { Component, model } from '@angular/core';

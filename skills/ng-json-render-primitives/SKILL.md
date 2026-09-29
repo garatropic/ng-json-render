@@ -59,7 +59,7 @@ In the tables below, `children` means the component projects its spec `children`
 | `Switch` | `checked: boolean` (model), `label: string` | Bind `checked` |
 | `Button` | `label: string`, `variant: 'primary' \| 'secondary' \| 'ghost' \| 'danger'` ('primary'), `disabled: boolean` | Emits **`press`** (no payload). Bind with `"on": { "press": { "action": "..." } }` |
 
-Form controls expose `value`/`checked` as a `model()`, so `{ "$bindState": "/path" }` binds them to state in both directions. On Angular 21 they also work with the Signal Forms `[field]` directive.
+Form controls expose `value`/`checked` as a `model()`, so `{ "$bindState": "/path" }` binds them to state in both directions. On Angular 21+ they also work with the Signal Forms `[formField]` directive (`[field]` in early 21 releases).
 
 ## Example spec
 

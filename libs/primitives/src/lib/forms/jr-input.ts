@@ -7,8 +7,8 @@ import {
 import { CONTROL, FIELD_LABEL } from './form-styles';
 
 /**
- * Text input. A Signal Forms value control — usable with the `[field]`
- * directive, or driven by `$bindState` through the renderer.
+ * Text input. A Signal Forms value control — usable with the `[formField]`
+ * directive (Angular 21+), or driven by `$bindState` through the renderer.
  */
 @Component({
   selector: 'jr-input',

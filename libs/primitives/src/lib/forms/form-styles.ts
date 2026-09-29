@@ -1,7 +1,8 @@
 // Note: these controls expose a `value` / `checked` model(), which *structurally*
 // satisfies Angular's Signal Forms `FormValueControl` / `FormCheckboxControl`
-// contracts — so on Angular 21 they work with the `[field]` directive — without
-// importing `@angular/forms/signals`, keeping the package usable on Angular 19+.
+// contracts — so on Angular 21+ they work with the `[formField]` directive
+// (`[field]` in early 21 releases) — without importing `@angular/forms/signals`,
+// keeping the package usable on Angular 19+.
 
 /** Classes shared by the labelled text controls (Input, Textarea, Select). */
 export const FIELD_LABEL =
