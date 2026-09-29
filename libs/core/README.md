@@ -1,41 +1,24 @@
 # @ng-json-render/core
 
-**Generative UI for Angular.** The Angular renderer for
-[json-render](https://json-render.dev): an AI model (or your server) describes a
-UI as a JSON **spec**, using only the components and actions listed in your
-**catalog**, and this package renders it with your own **native Angular
-components**. No iframes, no `eval`, no generated code.
+Angular renderer for [json-render](https://json-render.dev). Renders a JSON spec, written by an AI model or your server, using your own Angular components.
 
-`@json-render/core` provides the framework-agnostic parts: catalogs, prompts,
-specs, streaming and expression evaluation. This package adds the Angular
-rendering layer: signals, standalone components, dynamic instantiation and
-DI-based events.
+[Docs](https://mainawycliffe.github.io/ng-json-render/) · [GitHub](https://github.com/mainawycliffe/ng-json-render)
 
-New to generative UI? Read [Why this exists](https://github.com/mainawycliffe/ng-json-render#why-this-exists)
-and [Generate UI with an AI model](https://github.com/mainawycliffe/ng-json-render#generate-ui-with-an-ai-model).
-
-📖 [Docs & live demo](https://mainawycliffe.github.io/ng-json-render/) ·
-🐙 [GitHub](https://github.com/mainawycliffe/ng-json-render) ·
-🕹️ [Real-world example](https://github.com/skein-js/skein-arcade/tree/main/apps/web)
+json-render is a framework for generative UI: a model generates a UI as JSON, using only the components and actions in your catalog. This package renders that JSON with Angular components. The catalog, spec format, prompts and streaming come from `@json-render/core`.
 
 ## Install
 
 ```sh
 npm i @ng-json-render/core @json-render/core
-
-# optional: ready-made Tailwind components and a registry for them
-npm i @ng-json-render/primitives
 ```
 
-Requires Angular 19–22. `@ng-json-render/primitives` also needs Tailwind CSS v4
-to scan the package; see the
-[installation guide](https://github.com/mainawycliffe/ng-json-render#installation).
+Requires Angular 19–22.
 
 ## Usage
 
 ```ts
 import { Component, signal } from '@angular/core';
-import { JrRenderer, type Spec } from '@ng-json-render/core';
+import { JrRenderer, type JrActionEvent, type Spec } from '@ng-json-render/core';
 import { primitivesRegistry } from '@ng-json-render/primitives';
 
 @Component({
@@ -53,53 +36,17 @@ export class App {
       save: { type: 'Button', props: { label: 'Save' }, on: { press: { action: 'save' } } },
     },
   });
-  onAction(e) { console.log(e.action, e.nodeId); }
+  onAction(e: JrActionEvent) { console.log(e.action, e.nodeId); }
 }
 ```
 
-## Authoring components
+## Documentation
 
-Any standalone component can be registered. Props map to discrete
-`input()`s, children go through `<ng-content>`, and events are raised via the
-injected `JR_CONTEXT`:
+The [project README](https://github.com/mainawycliffe/ng-json-render#readme) covers:
 
-```ts
-import { Component, inject, input } from '@angular/core';
-import { JR_CONTEXT } from '@ng-json-render/core';
-
-@Component({
-  selector: 'jr-button',
-  template: `<button (click)="ctx.emit('press')">{{ label() }}<ng-content /></button>`,
-})
-export class MyButton {
-  label = input('');
-  protected ctx = inject(JR_CONTEXT);
-}
-```
-
-Register it with `defineRegistry({ Button: MyButton })` and pass to `<jr-renderer>`
-or `provideJsonRender({ registry })`.
-
-## Data binding
-
-Props support the full `@json-render/core` expression language — `$state`
-paths, `$cond/$then/$else`, `$template`, and directives — resolved against the
-spec's `state`. Provide/override state via the `[state]` input.
-
-## Testing
-
-`@ng-json-render/core/testing` exports a `renderSpec()` harness for TestBed:
-
-```ts
-import { renderSpec } from '@ng-json-render/core/testing';
-
-const r = renderSpec(spec, { registry });
-expect(r.query('button')?.textContent).toContain('Save');
-```
-
-## Status
-
-Implemented: the renderer engine, granular reactivity, data binding, actions,
-and two-way Signal Forms binding (`$bindState`). Streaming
-(`injectUiStream()`), `$item/$index` repeat, and a broader catalog are on the
-roadmap.
+- [Spec format](https://github.com/mainawycliffe/ng-json-render#spec-format)
+- [Generating specs with AI](https://github.com/mainawycliffe/ng-json-render#generating-specs-with-ai)
+- [Custom components](https://github.com/mainawycliffe/ng-json-render#custom-components)
+- [Actions](https://github.com/mainawycliffe/ng-json-render#actions)
+- [Feature support](https://github.com/mainawycliffe/ng-json-render#feature-support)
+- [Testing](https://github.com/mainawycliffe/ng-json-render#testing) with `@ng-json-render/core/testing`

@@ -22,11 +22,11 @@ interface Section {
     <div class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Components</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        <code>&#64;ng-json-render/primitives</code> ships 20 Tailwind-styled,
-        dark-mode-ready components and <code>primitivesRegistry</code>, so you
-        can render specs before writing any components of your own. To let a
-        model use them, list them in your catalog. Each block below is a live
-        render on the left and the exact spec on the right.
+        The 20 components in <code>&#64;ng-json-render/primitives</code>,
+        registered in <code>primitivesRegistry</code>. They are styled with
+        Tailwind CSS v4 and support dark mode. The package does not include a
+        catalog; add the components you want the model to use to your own.
+        Each example shows the output on the left and its spec on the right.
       </p>
     </div>
 

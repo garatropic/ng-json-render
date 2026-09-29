@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 interface Step {
   title: string;
@@ -7,44 +6,17 @@ interface Step {
   code: string;
 }
 
-interface Tip {
-  title: string;
-  body: string;
-}
-
 @Component({
   selector: 'app-ai',
-  imports: [RouterLink],
   template: `
     <div class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Generate UI with AI</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        Here is the whole loop. Your server turns a <strong>catalog</strong>
-        into a system prompt and calls a model. The model answers with a
-        <strong>spec</strong>, written as JSON patches, one per line. The
-        browser compiles those patches into a spec and
-        <code>&lt;jr-renderer&gt;</code> renders it, updating as each line
-        arrives.
+        Your server turns a catalog into a system prompt and calls the model.
+        The model responds with JSONL, one JSON Patch per line. The browser
+        applies the patches to a spec as they arrive, and
+        <code>&lt;jr-renderer&gt;</code> renders it progressively.
       </p>
-      <pre
-        class="mt-4 overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-100 dark:border-zinc-800"
-      ><code>{{ flow }}</code></pre>
-    </div>
-
-    <h2 class="mb-3 text-lg font-semibold">How to approach it</h2>
-    <div class="mb-10 grid max-w-4xl gap-4 sm:grid-cols-2">
-      @for (tip of tips; track tip.title) {
-        <div
-          class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
-        >
-          <div class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            {{ tip.title }}
-          </div>
-          <p class="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-            {{ tip.body }}
-          </p>
-        </div>
-      }
     </div>
 
     <ol class="flex flex-col gap-8">
@@ -69,78 +41,51 @@ interface Tip {
       }
     </ol>
 
-    <div
-      class="mt-10 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
-    >
-      <h3 class="text-sm font-semibold">Next steps</h3>
-      <ul class="mt-2 space-y-1 text-sm text-indigo-600 dark:text-indigo-400">
-        <li>
-          <a routerLink="/custom" class="hover:underline"
-            >Let the model use your own components →</a
-          >
-        </li>
-        <li>
-          <a routerLink="/dashboard" class="hover:underline"
-            >See a full dashboard rendered from one spec →</a
-          >
-        </li>
-        <li>
-          <a
-            href="https://json-render.dev/docs"
-            target="_blank"
-            rel="noreferrer"
-            class="hover:underline"
-            >Generation modes, editing specs & more (json-render docs) →</a
-          >
-        </li>
-      </ul>
-    </div>
+    <h2 class="mt-12 mb-3 text-lg font-semibold">Guidelines</h2>
+    <ul class="max-w-2xl list-disc space-y-2 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
+      @for (g of guidelines; track g.title) {
+        <li><strong>{{ g.title }}</strong> {{ g.body }}</li>
+      }
+    </ul>
+
+    <p class="mt-8 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
+      To edit an existing spec with a follow-up prompt, see
+      <code>buildUserPrompt</code> in the
+      <a
+        href="https://json-render.dev/docs"
+        target="_blank"
+        rel="noreferrer"
+        class="text-indigo-600 hover:underline dark:text-indigo-400"
+        >json-render docs</a
+      >.
+    </p>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiPage {
-  protected readonly flow = `user prompt
-   │
-   ▼
-your server:  catalog.prompt()  +  LLM call
-   │
-   ▼  JSONL patches, one per line
-browser:      createSpecStreamCompiler()  →  spec signal
-   │
-   ▼
-<jr-renderer [spec]>  →  your Angular components`;
-
-  protected readonly tips: Tip[] = [
+  protected readonly guidelines = [
     {
-      title: 'Start from the UI, not the model',
-      body: 'Hand-write two or three specs for real screens first. If you can’t express a screen with your components, the model can’t either.',
+      title: 'Keep the catalog small.',
+      body: 'Every component and prop is something the model can get wrong. Write descriptions as documentation; they are all the model sees.',
     },
     {
-      title: 'Keep the catalog small and well described',
-      body: 'Every component and prop is something the model can get wrong. Each component’s description is the model’s only documentation, so write it like documentation.',
+      title: 'Keep the catalog and registry in sync.',
+      body: 'A type missing from the registry is skipped; a type missing from the catalog is never generated.',
     },
     {
-      title: 'Make the catalog match the registry',
-      body: 'The catalog tells the model what exists; the registry tells Angular how to draw it. A type in one but not the other renders nothing or is never generated.',
+      title: 'Treat actions as intents.',
+      body: 'The model names an action; your handler decides what happens and checks permissions. Don’t execute URLs, queries or code from a spec.',
     },
     {
-      title: 'Keep actions as intents',
-      body: 'The model names what the user wants (export_data, choose_plan). Your action handlers decide how, and check permissions. Never run URLs, queries or code taken from a spec.',
-    },
-    {
-      title: 'Validate before you trust',
-      body: 'Check the result with catalog.validate(spec) or validateSpec, and show a fallback when it fails. Unknown types are skipped by the renderer, never executed.',
-    },
-    {
-      title: 'Stream it',
-      body: 'Each line the model writes is a complete patch, so you can render after every line. Users see the UI appear instead of waiting on a spinner.',
+      title: 'Validate on the server.',
+      body: 'Check the spec with catalog.validate(spec) or validateSpec(spec) before sending it to the client, and handle failures.',
     },
   ];
 
   protected readonly steps: Step[] = [
     {
       title: 'Define a catalog (server)',
-      body: 'List the components your registry can render, with Zod props and a description for each, plus the actions the model may wire up. The schema describes the flat spec format that ng-json-render renders. @ng-json-render/primitives ships components and a registry but not a catalog, so list the primitives you want the model to use here.',
+      body: 'The catalog lists the components the model may use, each with Zod props and a description; the description is what the model reads. @json-render/core has no ready-made schema for this renderer, so define the flat spec schema. Every catalog type must also be in the registry. Use .optional() for optional props, not .nullable(): an explicit null is set on the input and replaces its default.',
       code: `// server/catalog.ts
 import { defineCatalog, defineSchema } from '@json-render/core';
 import { z } from 'zod';
@@ -183,8 +128,8 @@ export const catalog = defineCatalog(schema, {
 });`,
     },
     {
-      title: 'Build the prompt and call the model (server)',
-      body: 'catalog.prompt() writes a system prompt that describes the spec format, your components and your actions, and asks the model to answer in JSONL (one JSON Patch per line). Use any LLM SDK; this example uses the AI SDK. ng-json-render does not expand repeat yet, so tell the model not to use it.',
+      title: 'Prompt the model (server)',
+      body: 'catalog.prompt() returns a system prompt describing the spec format, your components and your actions, and asks for JSONL output. The default prompt also describes repeat, which this renderer does not support yet, so add a rule against it. Any LLM SDK works; this example uses the AI SDK.',
       code: `// server/generate.ts
 import { streamText } from 'ai';
 import { catalog } from './catalog';
@@ -212,8 +157,8 @@ export async function POST(req: Request) {
 // {"op":"add","path":"/elements/signups","value":{"type":"Stat","props":{"label":"Signups","value":"1,204"},"children":[]}}`,
     },
     {
-      title: 'Stream the patches into a spec and render it (Angular)',
-      body: 'createSpecStreamCompiler turns JSONL patches into a spec as they arrive. Put each result in a signal and <jr-renderer> updates as the UI grows. Not streaming? Collect the whole reply and call compileSpecStream(text) instead.',
+      title: 'Render the stream (Angular)',
+      body: 'createSpecStreamCompiler applies patches as they arrive and buffers lines split across chunks. Set each result on a signal and the renderer updates as the UI grows. If you receive the whole response at once, use compileSpecStream(text).',
       code: `import { Component, signal } from '@angular/core';
 import { JrRenderer, createSpecStreamCompiler, type JrActionEvent, type Spec } from '@ng-json-render/core';
 
@@ -252,7 +197,7 @@ export class Assistant {
     },
     {
       title: 'Handle actions',
-      body: 'When the user clicks a generated button, the spec names an action and your code runs it. Register handlers app-wide, or listen on (action).',
+      body: 'When a user clicks a generated button, the spec names the action and your handler runs it. Handlers receive { action, payload, nodeId, element }. Register them with provideJsonRender, or listen on (action).',
       code: `provideJsonRender({
   registry: primitivesRegistry,
   actions: {

@@ -90,14 +90,12 @@ export const registry = mergeRegistries(
     <div class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Custom components</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        Generative UI gets useful when the model builds screens from
-        <strong>your</strong> components: your pricing card, your order table,
-        your design system. Any standalone Angular component works. Props map to
-        <code>input()</code>, children go through <code>&lt;ng-content&gt;</code>,
-        and events use the injected <code>JR_CONTEXT</code>. Add it to the
-        <strong>registry</strong> under a <code>type</code> so Angular can draw
-        it, and to your <strong>catalog</strong> (with a description) so the
-        model knows it exists.
+        Any standalone component can be registered; no base class or decorator
+        is needed. Props are set on matching <code>input()</code>s, children
+        are projected into <code>&lt;ng-content&gt;</code>, and events are
+        raised with <code>inject(JR_CONTEXT).emit()</code>. Register the
+        component under a <code>type</code>, merge it with the built-ins, and
+        add the type to your catalog so the model can use it.
       </p>
     </div>
 

@@ -9,11 +9,8 @@ import { DEMO_SPEC } from '../demo-spec';
     <div class="mb-6 max-w-2xl">
       <h1 class="text-2xl font-semibold tracking-tight">Dashboard example</h1>
       <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        A complete analytics app — header, KPI stats, bar & line charts, a
-        table, and a settings form two-way bound to live state — rendered from a
-        <strong>single JSON spec</strong>. This is the kind of spec a model
-        writes when its catalog contains these components. Nothing here is
-        hand-coded Angular except the components themselves.
+        An analytics dashboard (stats, charts, table and a bound settings
+        form) rendered from one spec.
       </p>
     </div>
 
