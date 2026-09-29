@@ -20,10 +20,10 @@ import {
   selector: 'app-docs-example',
   imports: [JrRenderer],
   template: `
-    @if (title()) {
+    @if (heading()) {
       <div class="mb-3">
         <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-          {{ title() }}
+          {{ heading() }}
         </h3>
         @if (description()) {
           <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
@@ -52,7 +52,7 @@ import {
     </div>
 
     @if (lastAction(); as a) {
-      <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+      <p role="status" class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         Action dispatched:
         <code class="font-medium text-indigo-600 dark:text-indigo-400">{{
           a
@@ -67,7 +67,8 @@ export class DocsExample {
   readonly spec = input.required<Spec>();
   /** Optional explicit registry; falls back to the DI default (primitives). */
   readonly registry = input<JrRegistry | null>(null);
-  readonly title = input<string>();
+  // Not `title`: that would also set the native tooltip attribute on the host.
+  readonly heading = input<string>();
   readonly description = input<string>();
   /** Show the code panel (spec JSON, or a custom `code` string). */
   readonly showCode = input(true);

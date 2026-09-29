@@ -116,4 +116,66 @@ describe('JrRenderer', () => {
     expect(r.host.textContent).toContain('shown');
     expect(r.host.textContent).not.toContain('hidden');
   });
+
+  it('clears the output when the spec is set back to null', async () => {
+    const r = renderSpec(
+      { root: 'a', elements: { a: { type: 'Box', props: { label: 'Hi' } } } },
+      { registry },
+    );
+    expect(r.query('.box')).toBeTruthy();
+    r.fixture.componentRef.setInput('spec', null);
+    await r.fixture.whenStable();
+    expect(r.query('.box')).toBeNull();
+  });
+
+  it('rebuilds when the registry input changes', async () => {
+    const spec: Spec = {
+      root: 'a',
+      elements: { a: { type: 'Box', props: { label: 'Hi' } } },
+    };
+    const r = renderSpec(spec, { registry: defineRegistry({}) });
+    expect(r.query('.box')).toBeNull();
+    r.fixture.componentRef.setInput('registry', registry);
+    await r.fixture.whenStable();
+    expect(r.query('.box')?.textContent).toContain('Hi');
+  });
+
+  it('skips cyclic children instead of recursing forever', () => {
+    const spec: Spec = {
+      root: 'a',
+      elements: {
+        a: { type: 'Box', props: { label: 'A' }, children: ['b'] },
+        b: { type: 'Box', props: { label: 'B' }, children: ['a'] },
+      },
+    };
+    const r = renderSpec(spec, { registry });
+    expect(r.queryAll('.box').length).toBe(2);
+  });
+
+  it('renders an element referenced more than once only once', () => {
+    // Each element lists the next one twice: without a guard this builds 2^N nodes.
+    const n = 30;
+    const elements: Spec['elements'] = {};
+    for (let i = 0; i < n; i++) {
+      elements[`e${i}`] = {
+        type: 'Box',
+        props: {},
+        children: i < n - 1 ? [`e${i + 1}`, `e${i + 1}`] : [],
+      };
+    }
+    const r = renderSpec({ root: 'e0', elements }, { registry });
+    expect(r.queryAll('.box').length).toBe(n);
+  });
+
+  it('skips types that name prototype members instead of crashing', () => {
+    const spec: Spec = {
+      root: 'root',
+      elements: {
+        root: { type: 'Box', props: { label: 'ok' }, children: ['bad'] },
+        bad: { type: 'constructor', props: {} },
+      },
+    };
+    const r = renderSpec(spec, { registry });
+    expect(r.query('.box')?.textContent).toContain('ok');
+  });
 });

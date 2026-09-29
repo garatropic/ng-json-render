@@ -1,4 +1,10 @@
-import { Injectable, type Signal, signal } from '@angular/core';
+import {
+  DestroyRef,
+  Injectable,
+  type Signal,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   type Spec,
   type StateModel,
@@ -33,11 +39,18 @@ export class JrStateStore {
   private store: StateStore = createStateStore({});
   private unsubscribe?: () => void;
 
-  /** Replace the spec and re-seed runtime state from `spec.state`. */
-  setSpec(spec: Spec): void {
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.unsubscribe?.());
+  }
+
+  /**
+   * Replace the spec and re-seed runtime state from `spec.state`. `null` clears
+   * the spec and resets state.
+   */
+  setSpec(spec: Spec | null): void {
     this._spec.set(spec);
     this.unsubscribe?.();
-    this.store = createStateStore(spec.state ?? {});
+    this.store = createStateStore(spec?.state ?? {});
     this.unsubscribe = this.store.subscribe(() =>
       this._state.set(this.store.getSnapshot()),
     );

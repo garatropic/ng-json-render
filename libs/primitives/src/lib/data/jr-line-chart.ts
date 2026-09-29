@@ -5,52 +5,10 @@ import {
   input,
 } from '@angular/core';
 
-/** A single {label, value} datum for charts. */
-export interface ChartDatum {
-  label: string;
-  value: number;
-}
-
-/** Responsive CSS bar chart (no chart library). */
-@Component({
-  selector: 'jr-bar-chart',
-  template: `
-    <div class="flex items-end gap-2" [style.height.px]="height()">
-      @for (d of data(); track $index) {
-        <div class="flex h-full flex-1 items-end">
-          <div
-            class="w-full rounded-t-md bg-indigo-500 transition-[height] duration-300 dark:bg-indigo-400"
-            [style.height.%]="pct(d.value)"
-            [title]="d.label + ': ' + d.value"
-          ></div>
-        </div>
-      }
-    </div>
-    <div class="mt-1.5 flex gap-2">
-      @for (d of data(); track $index) {
-        <div
-          class="flex-1 truncate text-center text-xs text-zinc-500 dark:text-zinc-400"
-        >
-          {{ d.label }}
-        </div>
-      }
-    </div>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'block' },
-})
-export class JrBarChart {
-  readonly data = input<ChartDatum[]>([]);
-  readonly height = input(160);
-  private readonly max = computed(() =>
-    Math.max(1, ...this.data().map((d) => d.value)),
-  );
-  protected pct(value: number): number {
-    return Math.max(2, (value / this.max()) * 100);
-  }
-}
-
-/** Responsive SVG line/area chart (no chart library). */
+/**
+ * Responsive SVG line/area chart (no chart library). Set `label` to describe
+ * the series to assistive tech; without it the chart is decorative.
+ */
 @Component({
   selector: 'jr-line-chart',
   template: `
@@ -59,7 +17,9 @@ export class JrBarChart {
       preserveAspectRatio="none"
       class="w-full"
       [style.height.px]="height()"
-      aria-hidden="true"
+      [attr.role]="label() ? 'img' : null"
+      [attr.aria-label]="label() || null"
+      [attr.aria-hidden]="label() ? null : 'true'"
     >
       @if (geom().line) {
         <polygon
@@ -84,6 +44,8 @@ export class JrBarChart {
 export class JrLineChart {
   readonly data = input<number[]>([]);
   readonly height = input(120);
+  /** Accessible description of the series, e.g. "Signups, last 7 days". */
+  readonly label = input<string>();
 
   protected readonly geom = computed(() => {
     const d = this.data();

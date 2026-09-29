@@ -73,6 +73,14 @@ describe('primitive rendering', () => {
     const { el } = render('Heading', { value: 'Dashboard', level: 1 });
     expect(el.textContent).toContain('Dashboard');
     expect(el.className).toContain('text-3xl');
+    expect(el.getAttribute('role')).toBe('heading');
+    expect(el.getAttribute('aria-level')).toBe('1');
+  });
+
+  it('Heading falls back to the default size for an unknown level', () => {
+    const { el } = render('Heading', { value: 'X', level: 9 });
+    expect(el.className).toContain('text-2xl');
+    expect(el.className).not.toContain('undefined');
   });
 
   it('Text renders its value', () => {
@@ -87,7 +95,11 @@ describe('primitive rendering', () => {
   });
 
   it('Stat renders value and a positive delta indicator', () => {
-    const { el } = render('Stat', { label: 'Revenue', value: '$1k', delta: 12 });
+    const { el } = render('Stat', {
+      label: 'Revenue',
+      value: '$1k',
+      delta: 12,
+    });
     expect(el.textContent).toContain('Revenue');
     expect(el.textContent).toContain('$1k');
     expect(el.textContent).toContain('▲');
@@ -97,6 +109,7 @@ describe('primitive rendering', () => {
   it('Stat shows a downward indicator for negative deltas', () => {
     const { el } = render('Stat', { label: 'Churn', value: '2%', delta: -3 });
     expect(el.textContent).toContain('▼');
+    expect(el.querySelector('.sr-only')?.textContent).toBe('down');
   });
 
   // ── feedback ────────────────────────────────────────────
@@ -111,11 +124,19 @@ describe('primitive rendering', () => {
     expect(el.textContent).toContain('Something happened');
   });
 
+  it('Alert uses a polite status role for info', () => {
+    const { el } = render('Alert', { message: 'FYI', tone: 'info' });
+    expect(el.getAttribute('role')).toBe('status');
+  });
+
   it('Progress renders a clamped width', () => {
     const { el } = render('Progress', { value: 140, label: 'Storage' });
     const bar = el.querySelector<HTMLElement>('[style*="width"]');
     expect(bar?.style.width).toBe('100%');
     expect(el.textContent).toContain('Storage');
+    expect(el.getAttribute('role')).toBe('progressbar');
+    expect(el.getAttribute('aria-valuenow')).toBe('100');
+    expect(el.getAttribute('aria-label')).toBe('Storage');
   });
 
   // ── data-viz ────────────────────────────────────────────
@@ -128,6 +149,9 @@ describe('primitive rendering', () => {
       ],
     });
     expect(el.querySelectorAll('[title]').length).toBe(3);
+    expect(el.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe(
+      'A: 3',
+    );
     expect(el.textContent).toContain('A');
     expect(el.textContent).toContain('C');
   });
@@ -136,6 +160,15 @@ describe('primitive rendering', () => {
     const { el } = render('LineChart', { data: [1, 5, 2, 8] });
     expect(el.querySelector('svg')).toBeTruthy();
     expect(el.querySelector('polyline')).toBeTruthy();
+    expect(el.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('LineChart exposes a label to assistive tech', () => {
+    const { el } = render('LineChart', { data: [1, 2], label: 'Signups' });
+    const svg = el.querySelector('svg');
+    expect(svg?.getAttribute('role')).toBe('img');
+    expect(svg?.getAttribute('aria-label')).toBe('Signups');
+    expect(svg?.hasAttribute('aria-hidden')).toBe(false);
   });
 
   it('Table renders headers and cell values', () => {
@@ -149,8 +182,9 @@ describe('primitive rendering', () => {
         { name: 'Grace', role: 'Admiral' },
       ],
     });
-    const headers = Array.from(el.querySelectorAll('th')).map(
-      (th) => th.textContent?.trim(),
+    expect(el.querySelector('th')?.getAttribute('scope')).toBe('col');
+    const headers = Array.from(el.querySelectorAll('th')).map((th) =>
+      th.textContent?.trim(),
     );
     expect(headers).toEqual(['Name', 'Role']);
     expect(el.querySelectorAll('tbody tr').length).toBe(2);
@@ -192,6 +226,19 @@ describe('primitive rendering', () => {
     expect(opts).toContain('Pro');
   });
 
+  it('Select shows a preset bound value', () => {
+    const { el } = render(
+      'Select',
+      {
+        options: ['free', 'pro', 'team'],
+        value: { $bindState: '/plan' },
+      },
+      {},
+      { plan: 'pro' },
+    );
+    expect((el.querySelector('select') as HTMLSelectElement).value).toBe('pro');
+  });
+
   it('Checkbox reflects its checked state from bound data', () => {
     const { el } = render(
       'Checkbox',
@@ -214,6 +261,7 @@ describe('primitive rendering', () => {
     const sw = el.querySelector('[role="switch"]') as HTMLElement;
     expect(el.textContent).toContain('Notify');
     expect(sw.getAttribute('aria-checked')).toBe('true');
+    expect(sw.getAttribute('aria-label')).toBe('Notify');
   });
 
   it('Button renders its label and emits press', () => {

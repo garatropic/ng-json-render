@@ -100,7 +100,7 @@ export const registry = mergeRegistries(
     </div>
 
     <app-docs-example
-      title="A custom PricingCard + Testimonial"
+      heading="A custom PricingCard + Testimonial"
       description="Rendered with a registry that merges these two custom components on top of the primitives. Click a plan — it emits the choose_plan action."
       [spec]="pricingSpec"
       [registry]="registry"

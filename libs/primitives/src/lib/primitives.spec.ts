@@ -34,8 +34,15 @@ describe('primitives', () => {
     const spec: Spec = {
       root: 'grid',
       elements: {
-        grid: { type: 'Grid', props: { columns: 2 }, children: ['stat', 'bar', 'line', 'table'] },
-        stat: { type: 'Stat', props: { label: 'Revenue', value: '$12k', delta: 8 } },
+        grid: {
+          type: 'Grid',
+          props: { columns: 2 },
+          children: ['stat', 'bar', 'line', 'table'],
+        },
+        stat: {
+          type: 'Stat',
+          props: { label: 'Revenue', value: '$12k', delta: 8 },
+        },
         bar: {
           type: 'BarChart',
           props: {
@@ -82,10 +89,27 @@ describe('primitives', () => {
     // Simulate user typing → state updates through the model bridge.
     el.value = 'Grace';
     el.dispatchEvent(new Event('input'));
-    r.fixture.detectChanges();
     await r.fixture.whenStable();
-    // The renderer wrote the new value back into state.
     expect(el.value).toBe('Grace');
+  });
+
+  it('writes $bindState edits back to state for other readers', async () => {
+    const spec: Spec = {
+      root: 'root',
+      elements: {
+        root: { type: 'Stack', props: {}, children: ['input', 'echo'] },
+        input: { type: 'Input', props: { value: { $bindState: '/name' } } },
+        echo: { type: 'Text', props: { value: { $state: '/name' } } },
+      },
+      state: { name: 'Ada' },
+    };
+
+    const r = renderSpec(spec, { registry: primitivesRegistry });
+    const el = r.query('input') as HTMLInputElement;
+    el.value = 'Grace';
+    el.dispatchEvent(new Event('input'));
+    await r.fixture.whenStable();
+    expect(r.query('jr-text')?.textContent).toContain('Grace');
   });
 
   it('emits the press action from a Button', () => {
