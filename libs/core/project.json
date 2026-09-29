@@ -4,13 +4,6 @@
   "sourceRoot": "libs/core/src",
   "prefix": "jr",
   "projectType": "library",
-  "release": {
-    "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  },
   "tags": ["type:adapter", "scope:json-render"],
   "targets": {
     "build": {
@@ -26,11 +19,6 @@
           "tsConfig": "libs/core/tsconfig.lib.prod.json"
         },
         "development": {}
-      }
-    },
-    "nx-release-publish": {
-      "options": {
-        "packageRoot": "dist/{projectRoot}"
       }
     },
     "test": {

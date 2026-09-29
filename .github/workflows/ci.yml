@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  workflow_call: # reused by release.yml as the pre-publish gate
 
 permissions:
   actions: read

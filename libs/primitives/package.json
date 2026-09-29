@@ -7,11 +7,11 @@
   "homepage": "https://mainawycliffe.github.io/ng-json-render/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mainawycliffe/ng-json-render.git",
+    "url": "git+https://github.com/garatropic/ng-json-render.git",
     "directory": "libs/primitives"
   },
   "bugs": {
-    "url": "https://github.com/mainawycliffe/ng-json-render/issues"
+    "url": "https://github.com/garatropic/ng-json-render/issues"
   },
   "keywords": [
     "angular",

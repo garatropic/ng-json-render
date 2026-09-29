@@ -4,13 +4,6 @@
   "sourceRoot": "libs/primitives/src",
   "prefix": "jr",
   "projectType": "library",
-  "release": {
-    "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk"
-    }
-  },
   "tags": ["type:ui", "scope:json-render"],
   "targets": {
     "build": {
@@ -26,11 +19,6 @@
           "tsConfig": "libs/primitives/tsconfig.lib.prod.json"
         },
         "development": {}
-      }
-    },
-    "nx-release-publish": {
-      "options": {
-        "packageRoot": "dist/{projectRoot}"
       }
     },
     "test": {

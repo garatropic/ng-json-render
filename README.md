@@ -493,10 +493,20 @@ pnpm install
 
 pnpm exec nx serve demo                   # docs site
 pnpm exec nx run-many -t lint test build  # all projects
-pnpm exec nx release                      # version, changelog, publish
 ```
 
-The docs site (`apps/demo`) deploys to GitHub Pages on every push to `main`. Publish `@ng-json-render/core` before `@ng-json-render/primitives` (or release them together) and keep their versions aligned.
+The docs site (`apps/demo`) deploys to GitHub Pages on every push to `main`.
+
+### Releasing
+
+Both packages share one version. From an up-to-date `main`:
+
+```sh
+pnpm release:dry-run 1.0.0-beta.0   # preview (or: patch, minor, major, prerelease)
+pnpm release 1.0.0-beta.0
+```
+
+This bumps the versions, updates `CHANGELOG.md`, commits, tags `v<version>`, pushes and creates a GitHub Release. Publishing the release triggers the [Release workflow](.github/workflows/release.yml), which runs CI and publishes both packages to npm with trusted publishing and provenance. Prerelease versions go to the `next` dist-tag, others to `latest`.
 
 ## License
 

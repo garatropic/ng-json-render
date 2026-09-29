@@ -7,12 +7,15 @@
   "homepage": "https://mainawycliffe.github.io/ng-json-render/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mainawycliffe/ng-json-render.git"
+    "url": "git+https://github.com/garatropic/ng-json-render.git"
   },
   "bugs": {
-    "url": "https://github.com/mainawycliffe/ng-json-render/issues"
+    "url": "https://github.com/garatropic/ng-json-render/issues"
   },
-  "scripts": {},
+  "scripts": {
+    "release": "nx release --skip-publish",
+    "release:dry-run": "nx release --skip-publish --dry-run"
+  },
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "dependencies": {

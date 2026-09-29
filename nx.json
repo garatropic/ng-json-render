@@ -71,10 +71,28 @@
     }
   },
   "release": {
+    "projects": ["core", "primitives"],
     "projectsRelationship": "fixed",
+    "releaseTag": {
+      "pattern": "v{version}"
+    },
     "version": {
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk",
       "preVersionCommand": "pnpm exec nx run-many -t build",
       "preserveMatchingDependencyRanges": false
+    },
+    "changelog": {
+      "projectChangelogs": false,
+      "workspaceChangelog": {
+        "createRelease": "github",
+        "file": "CHANGELOG.md"
+      }
+    },
+    "git": {
+      "commit": true,
+      "tag": true,
+      "push": true
     }
   }
 }
